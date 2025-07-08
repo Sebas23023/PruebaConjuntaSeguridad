@@ -1,10 +1,6 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
+@section('content')
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -68,9 +64,19 @@
                     @role('admin')
                         <h3 class="font-bold mb-2">Panel de administración</h3>
                         <p>Acceso total al sistema.</p>
+
+                        <div class="mt-6">
+                            <h4 class="font-bold mb-2">Ver Lista de Usuarios</h4>
+                            <a href="{{ route('users.index') }}" class="text-blue-500 hover:underline">Ver usuarios</a>
+                        </div>
+
+                        <div class="mt-6">
+                            <h4 class="font-bold mb-2">Ver Auditoría</h4>
+                            <a href="#" class="text-blue-500 hover:underline">Ver auditoría</a>
+                        </div>
                     @endrole
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

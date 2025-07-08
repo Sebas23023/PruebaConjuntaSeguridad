@@ -3,7 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotaController;
-
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RoleController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -27,9 +28,12 @@ Route::middleware(['auth', 'role:docente'])->group(function () {
 // Rutas para estudiantes (ver sus notas, ya está en el dashboard)
 // Si necesitas una ruta API, puedes agregarla aquí
 
-// Rutas para admin (acceso total, ejemplo)
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    // Aquí puedes agregar rutas de administración
-});
+// Rutas específicas para administradores
+    Route::middleware(['role:admin'])->group(function () {
+        // Gestión de usuarios
+        Route::resource('users', UserController::class);
+        Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivateUser'])->name('users.deactivate');
+        Route::patch('/users/{user}/activate', [UserController::class, 'activateUser'])->name('users.activate');
+    });
 
 require __DIR__.'/auth.php';
