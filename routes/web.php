@@ -22,7 +22,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // Rutas para docentes
-Route::middleware(['role:docente', 'check.user.status'])->group(function () {
+Route::middleware(['role:docente', 'user.status'])->group(function () {
     Route::get('asignaturas', [AsignaturaController::class, 'index'])->name('asignaturas.index');
     Route::get('notas', [NotaController::class, 'index'])->name('notas.index');
     Route::post('notas', [NotaController::class, 'store'])->name('notas.store');
@@ -33,12 +33,12 @@ Route::middleware(['role:docente', 'check.user.status'])->group(function () {
 });
 
 // Rutas para estudiantes
-Route::middleware(['role:estudiante', 'check.user.status'])->group(function () {
+Route::middleware(['role:estudiante', 'user.status'])->group(function () {
     Route::get('notas', [NotaController::class, 'index'])->name('notas.index');
 });
 
 // Rutas para admin
-Route::middleware(['role:Administrador', 'check.user.status'])->group(function () {
+Route::middleware(['role:admin', 'user.status'])->group(function () {
     Route::resource('users', UserController::class);
     Route::post('users/{user}/inactivar', [UserController::class, 'inactivar'])->name('users.inactivar');
     Route::post('users/{user}/activar', [UserController::class, 'activar'])->name('users.activar');
