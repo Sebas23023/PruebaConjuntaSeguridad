@@ -18,6 +18,7 @@ return new class extends Migration
             $table->decimal('promedio', 5, 2);
             $table->string('estado_final');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

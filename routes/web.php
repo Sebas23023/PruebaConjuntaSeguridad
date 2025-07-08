@@ -4,7 +4,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NotaController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\RoleController;
+use App\Http\Controllers\AsignaturaController;
+use App\Http\Controllers\AuditoriaController;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -19,21 +21,28 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Rutas para docentes (registrar y actualizar notas)
-Route::middleware(['auth', 'role:docente'])->group(function () {
-    Route::post('/notas', [NotaController::class, 'store'])->name('notas.store');
-    Route::put('/notas/{id}', [NotaController::class, 'update'])->name('notas.update');
+// Rutas para docentes
+Route::middleware(['role:docente', 'check.user.status'])->group(function () {
+    Route::get('asignaturas', [AsignaturaController::class, 'index'])->name('asignaturas.index');
+    Route::get('notas', [NotaController::class, 'index'])->name('notas.index');
+    Route::post('notas', [NotaController::class, 'store'])->name('notas.store');
+    Route::put('notas/{id}', [NotaController::class, 'update'])->name('notas.update');
+    Route::post('notas/{id}/eliminar', [NotaController::class, 'destroy'])->name('notas.destroy');
+    Route::post('notas/{id}/restaurar', [NotaController::class, 'restore'])->name('notas.restore');
+    Route::post('notas/{id}/borrar-definitivo', [NotaController::class, 'forceDelete'])->name('notas.forceDelete');
 });
 
-// Rutas para estudiantes (ver sus notas, ya está en el dashboard)
-// Si necesitas una ruta API, puedes agregarla aquí
+// Rutas para estudiantes
+Route::middleware(['role:estudiante', 'check.user.status'])->group(function () {
+    Route::get('notas', [NotaController::class, 'index'])->name('notas.index');
+});
 
-// Rutas específicas para administradores
-    Route::middleware(['role:admin'])->group(function () {
-        // Gestión de usuarios
-        Route::resource('users', UserController::class);
-        Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivateUser'])->name('users.deactivate');
-        Route::patch('/users/{user}/activate', [UserController::class, 'activateUser'])->name('users.activate');
-    });
+// Rutas para admin
+Route::middleware(['role:Administrador', 'check.user.status'])->group(function () {
+    Route::resource('users', UserController::class);
+    Route::post('users/{user}/inactivar', [UserController::class, 'inactivar'])->name('users.inactivar');
+    Route::post('users/{user}/activar', [UserController::class, 'activar'])->name('users.activar');
+    Route::get('auditorias', [AuditoriaController::class, 'index'])->name('auditorias.index');
+});
 
 require __DIR__.'/auth.php';
